@@ -1,0 +1,104 @@
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Staatliches&family=Cinzel:wght@400;700&family=Oswald:wght@300;400;700&family=Bebas+Neue&family=Lato:ital,wght@0,300;0,400;0,700;1,300;1,400&family=JetBrains+Mono:wght@400;700&family=Sedgwick+Ave&family=Permanent+Marker&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: #121212;
+    color: #F5F5F7;
+    font-family: 'Lato', 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Scrollbar customizada */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: #121212; }
+  ::-webkit-scrollbar-thumb { background: #C9A84C; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #E2C472; }
+}
+
+@layer utilities {
+  /* Textura de ruído no fundo */
+  .noise-bg {
+    position: relative;
+  }
+  .noise-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Borda dupla estilo vintage */
+  .double-border {
+    border: 2px solid #C9A84C;
+    outline: 1px solid #C9A84C;
+    outline-offset: 3px;
+  }
+
+  /* Stripes do barber pole */
+  .barber-stripe {
+    background: repeating-linear-gradient(
+      180deg,
+      #C1121F 0px,    #C1121F 10px,
+      #F8F9FA 10px,   #F8F9FA 20px,
+      #023E8A 20px,   #023E8A 30px,
+      #F8F9FA 30px,   #F8F9FA 40px
+    );
+    background-size: 100% 40px;
+    animation: stripe 1.2s linear infinite;
+  }
+
+  /* Sombra gold */
+  .shadow-gold {
+    box-shadow: 0 0 0 1px #C9A84C33, 0 4px 20px #C9A84C22;
+  }
+
+  .shadow-gold-lg {
+    box-shadow: 0 0 0 1px #C9A84C55, 0 8px 40px #C9A84C33;
+  }
+
+  /* Grayscale / color hover para barbeiros */
+  .grayscale-hover {
+    filter: grayscale(100%) contrast(110%);
+    transition: filter 0.4s ease;
+  }
+  .grayscale-hover:hover {
+    filter: grayscale(0%) contrast(100%);
+  }
+
+  /* Effeito Stroke para Tipografia Estigada */
+  .text-stroke-gold {
+    -webkit-text-stroke: 1px rgba(197, 160, 89, 0.8);
+    color: transparent;
+  }
+  .text-stroke-paper {
+    -webkit-text-stroke: 1px rgba(245, 245, 247, 0.6);
+    color: transparent;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Warm pulse animation for highlighted card
+   ═══════════════════════════════════════════════════════════════════════════ */
+@keyframes warmPulse {
+  0%, 100% {
+    box-shadow: inset 0 0 20px rgba(201, 168, 76, 0.02);
+  }
+  50% {
+    box-shadow: inset 0 0 40px rgba(201, 168, 76, 0.05);
+  }
+}
