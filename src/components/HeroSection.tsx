@@ -16,7 +16,7 @@ export default function HeroSection({ onBookClick }: HeroSectionProps) {
   }
 
   return (
-    <section className="relative min-h-screen flex flex-col overflow-hidden bg-black">
+    <section className="relative flex flex-col overflow-hidden bg-black" style={{ minHeight: '100svh' }}>
       {/* ── Background image + dark overlay ── */}
       <div className="absolute inset-0 z-0">
         <div
@@ -36,21 +36,21 @@ export default function HeroSection({ onBookClick }: HeroSectionProps) {
       </div>
 
       {/* ── Content Principal ── */}
-      <div className="relative z-10 flex flex-col items-center justify-between flex-1 px-6 sm:px-8 text-center pt-24 sm:pt-36 pb-12 sm:pb-16">
-        {/* ── Título — ocupa o espaço e centra-se ── */}
-        <div className="flex flex-1 items-center justify-center w-full">
-          <h1 className="font-graffiti leading-[0.9] tracking-normal flex flex-col items-center drop-shadow-2xl">
-            <span className="block text-paper text-[70px] sm:text-[110px] md:text-[140px] lg:text-[170px] -mb-2 sm:-mb-6 rotate-[-2deg]">
-              CONNECT
-            </span>
-            <span className="block text-[65px] sm:text-[100px] md:text-[120px] lg:text-[150px] text-gold rotate-[1deg] ml-4">
-              BARBER
-            </span>
-          </h1>
-        </div>
+      <div className="relative z-10 flex flex-col items-center flex-1 px-6 sm:px-8 text-center"
+           style={{ paddingTop: 'max(96px, 18svh)', paddingBottom: 'max(48px, 12svh)' }}>
 
-        {/* Botões — fundo da secção, sempre visíveis */}
-        <div className="flex flex-row items-center gap-4 sm:gap-5 w-full justify-center">
+        {/* ── Título centrado ── */}
+        <h1 className="font-graffiti leading-[0.9] tracking-normal flex flex-col items-center drop-shadow-2xl">
+          <span className="block text-paper text-[70px] sm:text-[110px] md:text-[140px] lg:text-[170px] -mb-2 sm:-mb-6 rotate-[-2deg]">
+            CONNECT
+          </span>
+          <span className="block text-[65px] sm:text-[100px] md:text-[120px] lg:text-[150px] text-gold rotate-[1deg] ml-4">
+            BARBER
+          </span>
+        </h1>
+
+        {/* Botões — sempre visíveis no fundo */}
+        <div className="flex flex-row items-center gap-4 sm:gap-5 mt-auto pt-8">
           <button
             onClick={onBookClick}
             className="
