@@ -49,12 +49,12 @@ export default function AuthModal({ onClose, onSuccess }: AuthModalProps) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
       <div className="absolute inset-0 bg-off-black/90 backdrop-blur-sm" onClick={onClose} />
 
       {/* Modal */}
-      <div className="relative w-full sm:max-w-md bg-off-black-2 border-2 border-paper/10 animate-slide-up">
+      <div className="relative w-full max-w-md bg-off-black-2 border-2 border-paper/10 animate-slide-up max-h-[90vh] overflow-y-auto">
         <BarberPole height="4px" />
 
         {/* Header */}

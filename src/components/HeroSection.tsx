@@ -65,9 +65,10 @@ export default function HeroSection({ onBookClick }: HeroSectionProps) {
       </div>
 
       {/* ── Content Principal ── */}
-      <div className="relative z-10 flex flex-col items-center justify-center flex-1 px-6 sm:px-8 text-center pt-32 sm:pt-40 pb-16 sm:pb-20">
-        {/* ── Título (Graffiti/Brush) - Mais solto, embaralhado, pichação ── */}
-        <h1 className="font-graffiti leading-[0.9] tracking-normal mb-6 flex flex-col items-center drop-shadow-2xl">
+      <div className="relative z-10 flex flex-col items-center flex-1 px-6 sm:px-8 text-center pt-32 sm:pt-40 pb-14 sm:pb-16">
+        {/* ── Título — centrado no espaço disponível ── */}
+        <div className="flex-1 flex items-center justify-center">
+        <h1 className="font-graffiti leading-[0.9] tracking-normal flex flex-col items-center drop-shadow-2xl">
           <span className="block text-paper text-[70px] sm:text-[110px] md:text-[140px] lg:text-[170px] -mb-2 sm:-mb-6 rotate-[-2deg]">
             CONNECT
           </span>
@@ -75,18 +76,17 @@ export default function HeroSection({ onBookClick }: HeroSectionProps) {
             BARBER
           </span>
         </h1>
+        </div>
 
-
-
-        {/* Botões de Ação */}
-        <div className="flex flex-col sm:flex-row items-center gap-5">
+        {/* Botões — ancorados ao fundo */}
+        <div className="flex flex-row items-center gap-4 sm:gap-5 mt-auto pb-2">
           <button
             onClick={onBookClick}
             className="
-              px-12 py-4 bg-gold text-off-black
-              font-hero text-lg tracking-[0.15em] uppercase
+              px-8 sm:px-12 py-3.5 sm:py-4 bg-gold text-off-black
+              font-hero text-base sm:text-lg tracking-[0.15em] uppercase
               hover:bg-gold-light hover:scale-[1.02] transition-all duration-300
-              min-w-[240px]
+              min-w-[140px] sm:min-w-[240px]
             "
           >
             {t('hero.cta')}
@@ -94,10 +94,10 @@ export default function HeroSection({ onBookClick }: HeroSectionProps) {
           <button
             onClick={scrollToContact}
             className="
-              px-12 py-4 border border-paper/20 text-paper/80
-              font-hero text-lg tracking-[0.15em] uppercase
+              px-8 sm:px-12 py-3.5 sm:py-4 border border-paper/20 text-paper/80
+              font-hero text-base sm:text-lg tracking-[0.15em] uppercase
               hover:border-gold hover:text-gold transition-all duration-300
-              min-w-[240px]
+              min-w-[140px] sm:min-w-[240px]
             "
           >
             {t('nav.contact')}
@@ -105,49 +105,6 @@ export default function HeroSection({ onBookClick }: HeroSectionProps) {
         </div>
       </div>
 
-      {/* ── INFO BAR ── */}
-      <div className="relative w-full z-30 px-4 sm:px-8 mt-auto pb-8 sm:pb-10 sm:-mb-6">
-        <div className="max-w-5xl mx-auto relative backdrop-blur-md bg-black/50 border-l-2 border-r-2 border-gold/50 shadow-2xl overflow-hidden">
-
-          <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/60 to-transparent" />
-          <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-gold/25 to-transparent" />
-
-          {/* Sempre 3 colunas — compacto mobile, elaborado desktop */}
-          <div className="grid grid-cols-3">
-
-            {[
-              { icon: <IconMapPin size={16} className="text-gold sm:hidden" />, iconLg: <IconMapPin size={22} className="text-gold hidden sm:block" />, label: 'Morada',   value: t('hero.address') },
-              { icon: <IconPhone  size={16} className="text-gold sm:hidden" />, iconLg: <IconPhone  size={22} className="text-gold hidden sm:block" />, label: 'Telefone', value: '+351 21 123 45 67' },
-              { icon: <IconClock  size={16} className="text-gold sm:hidden" />, iconLg: <IconClock  size={22} className="text-gold hidden sm:block" />, label: 'Horário',   value: t('hero.hours') },
-            ].map(({ icon, iconLg, label, value }, i, arr) => (
-              <div key={label} className="group relative flex flex-col items-center justify-center text-center py-4 sm:py-7 px-2 sm:px-6 hover:bg-gold/[0.04] transition-colors duration-300">
-
-                {/* Ícone */}
-                <div className="w-8 h-8 sm:w-11 sm:h-11 border border-gold/30 bg-gold/5 flex items-center justify-center mb-2 sm:mb-4 group-hover:border-gold/60 group-hover:bg-gold/10 transition-all duration-300">
-                  {icon}{iconLg}
-                </div>
-
-                {/* Label — oculta no mobile */}
-                <p className="hidden sm:block font-mono text-[9px] tracking-[0.45em] uppercase text-gold/70 mb-2">{label}</p>
-                <div className="hidden sm:block h-px w-6 bg-gold/30 mx-auto mb-2.5" />
-
-                {/* Valor */}
-                <p className="font-body text-[10px] sm:text-sm text-paper/90 font-light leading-tight sm:leading-relaxed">{value}</p>
-
-                {/* Divisor vertical entre células */}
-                {i < arr.length - 1 && (
-                  <div className="absolute right-0 top-3 bottom-3 flex flex-col items-center justify-center gap-1 pointer-events-none">
-                    <div className="w-px flex-1 bg-white/5" />
-                    <span className="w-1 h-1 bg-gold/25 rotate-45 flex-shrink-0" />
-                    <div className="w-px flex-1 bg-white/5" />
-                  </div>
-                )}
-              </div>
-            ))}
-
-          </div>
-        </div>
-      </div>
 
     </section>
   )
