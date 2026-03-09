@@ -1,4 +1,5 @@
 import type { Service, Barber, TimeSlot } from '../types'
+import { asset } from '../lib/asset'
 
 export const SERVICES: Service[] = [
   {
@@ -56,7 +57,7 @@ export const BARBERS: Barber[] = [
     id: 'b1',
     name: 'Miguel Ferreira',
     role: 'Master Barber',
-    photo: '/barbeiro_1.jpg',
+    photo: asset('/barbeiro_1.jpg'),
     specialties: ['Fade', 'Barba Clássica', 'Cortes Vintage'],
     available: true,
     rating: 4.9,
@@ -66,7 +67,7 @@ export const BARBERS: Barber[] = [
     id: 'b2',
     name: 'André Costa',
     role: 'Senior Barber',
-    photo: '/barbeiro_2.jpg',
+    photo: asset('/barbeiro_2.jpg'),
     specialties: ['Texturas', 'Degradê', 'Barba Modelada'],
     available: true,
     rating: 4.8,
@@ -76,7 +77,7 @@ export const BARBERS: Barber[] = [
     id: 'b3',
     name: 'Tomás Ribeiro',
     role: 'Barber',
-    photo: '/barbeiro_3.jpg',
+    photo: asset('/barbeiro_3.jpg'),
     specialties: ['Cortes Modernos', 'Undercut', 'Styling'],
     available: false,
     rating: 4.7,
@@ -86,7 +87,7 @@ export const BARBERS: Barber[] = [
     id: 'b4',
     name: 'Rafael Sousa',
     role: 'Senior Barber',
-    photo: '/barbeiro_4.jpg',
+    photo: asset('/barbeiro_4.jpg'),
     specialties: ['Barbas Longas', 'Afro', 'Cortes Clássicos'],
     available: true,
     rating: 4.9,

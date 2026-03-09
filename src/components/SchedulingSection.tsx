@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight, Calendar, Clock } from 'lucide-react'
 import { generateTimeSlots, generateMonthAvailability } from '../data/mockData'
 import type { Barber, Service } from '../types'
 import { useLanguage } from '../context/LanguageContext'
+import { asset } from '../lib/asset'
 
 interface SchedulingSectionProps {
   selectedBarber:  Barber | null
@@ -76,7 +77,7 @@ export default function SchedulingSection({
     <section id="agendar" className="relative py-16 sm:py-20 px-4 sm:px-6 overflow-hidden">
       {/* Fundo dessaturado — evita conflito de cor com o dourado */}
       <div className="absolute inset-0" style={{
-        backgroundImage: "url('/fundo_page_1.jpg')",
+        backgroundImage: `url('${asset('/fundo_page_1.jpg')}')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundAttachment: 'fixed',

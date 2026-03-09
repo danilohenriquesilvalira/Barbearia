@@ -2,6 +2,7 @@ import { Star, Scissors, CheckCircle, XCircle } from 'lucide-react'
 import type { Barber } from '../types'
 import { BARBERS } from '../data/mockData'
 import { useLanguage } from '../context/LanguageContext'
+import { asset } from '../lib/asset'
 
 function BarberCard({
   barber,
@@ -139,7 +140,7 @@ export default function BarbersSection({ onBarberSelect, selectedBarberId }: Bar
     <section id="barbeiros" className="relative py-16 sm:py-20 px-4 sm:px-6 overflow-hidden">
       {/* Fundo dessaturado — evita conflito de cor com o dourado */}
       <div className="absolute inset-0" style={{
-        backgroundImage: "url('/fundo_page_1.jpg')",
+        backgroundImage: `url('${asset('/fundo_page_1.jpg')}')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundAttachment: 'fixed',

@@ -2,23 +2,18 @@ import { Check } from 'lucide-react'
 import type { Service } from '../types'
 import { SERVICES } from '../data/mockData'
 import { useLanguage } from '../context/LanguageContext'
+import { asset } from '../lib/asset'
 
 /* ═══════════════════════════════════════════════════════════════════════════
    High-quality mood shots for each service
    ═══════════════════════════════════════════════════════════════════════════ */
 const SERVICE_IMAGES: Record<string, string> = {
-  // s1: Corte Clássico
-  's1': '/corte_classico.jpg',
-  // s2: Corte & Barba
-  's2': '/Imagem_Corte.svg',
-  // s3: Barba Tradicional
-  's3': '/Imagem_Barba.svg',
-  // s4: Corte Premium
-  's4': '/Corte_Premiun.png',
-  // s5: Tratamento
-  's5': '/tratamento_couro_cabeludo.jpg',
-  // s6: Pacote Noivo
-  's6': '/pacote_noivo.jpeg',
+  's1': asset('/corte_classico.jpg'),
+  's2': asset('/Imagem_Corte.svg'),
+  's3': asset('/Imagem_Barba.svg'),
+  's4': asset('/Corte_Premiun.png'),
+  's5': asset('/tratamento_couro_cabeludo.jpg'),
+  's6': asset('/pacote_noivo.jpeg'),
 }
 
 /* ── Pequenos SVGs Ouro ───────────────────────────────────────── */

@@ -1,4 +1,5 @@
 import { useLanguage } from '../context/LanguageContext'
+import { asset } from '../lib/asset'
 
 /* ── SVG Icons minimalistas (ULTRA-FINOS) ────────────────────────────────── */
 function IconMapPin({ size = 20, className = '' }: { size?: number; className?: string }) {
@@ -50,7 +51,7 @@ export default function HeroSection({ onBookClick }: HeroSectionProps) {
         <div
           className="absolute inset-0"
           style={{
-            backgroundImage: `url('/Imagem_Hero.svg')`,
+            backgroundImage: `url('${asset('/Imagem_Hero.svg')}')`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
           }}
