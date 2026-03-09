@@ -39,7 +39,8 @@ export default function HeroSection({ onBookClick }: HeroSectionProps) {
       <div className="relative z-10 flex flex-col items-center flex-1 px-6 sm:px-8 text-center"
            style={{ paddingTop: 'max(96px, 18svh)', paddingBottom: 'max(48px, 12svh)' }}>
 
-        {/* ── Título centrado ── */}
+        {/* ── Título centrado no espaço disponível ── */}
+        <div className="flex-1 flex items-center justify-center w-full">
         <h1 className="font-graffiti leading-[0.9] tracking-normal flex flex-col items-center drop-shadow-2xl">
           <span className="block text-paper text-[70px] sm:text-[110px] md:text-[140px] lg:text-[170px] -mb-2 sm:-mb-6 rotate-[-2deg]">
             CONNECT
@@ -48,6 +49,7 @@ export default function HeroSection({ onBookClick }: HeroSectionProps) {
             BARBER
           </span>
         </h1>
+        </div>
 
         {/* Botões — sempre visíveis no fundo */}
         <div className="flex flex-row items-center gap-4 sm:gap-5 mt-auto pt-8">
