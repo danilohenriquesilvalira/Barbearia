@@ -15,20 +15,18 @@ import BookingModal  from './components/BookingModal'
 import Footer        from './components/Footer'
 import AuthModal     from './components/AuthModal'
 import UserDashboard from './components/UserDashboard'
-import AdminApp      from './admin/AdminApp'
-
-// Emails Google com acesso admin
-// Quando o Supabase estiver activo, isto é substituído pela coluna `role` na tabela profiles
-const ADMIN_EMAILS: string[] = [
-  'danilosilvalira10@gmail.com',
-]
+import AdminApp        from './admin/AdminApp'
+import BarberApp       from './barber/BarberApp'
+import StaffLoginPage  from './components/StaffLoginPage'
 
 function AppInner() {
   const { user, needsProfile } = useAuth()
-  const [adminOpen, setAdminOpen] = useState(false)
 
-  const isAdmin = !!user && ADMIN_EMAILS.includes(user.email ?? '')
-
+  const isStaffRoute = window.location.pathname.endsWith('/staff')
+  const isAdmin  = user?.role === 'admin'
+  const isBarber = user?.role === 'barber'
+  const [adminOpen,     setAdminOpen]     = useState(false)
+  const [barberOpen,    setBarberOpen]    = useState(false)
   const [bookingOpen,   setBookingOpen]   = useState(false)
   const [authModalOpen, setAuthModalOpen] = useState(false)
   const [dashboardOpen, setDashboardOpen] = useState(false)
@@ -36,17 +34,31 @@ function AppInner() {
   // Serviço pendente — guardado antes do login para abrir o booking modal depois
   const pendingServiceRef = useRef<Service | null>(null)
 
+  // Quando barbeiro faz login → abrir BarberApp automaticamente
+  useEffect(() => {
+    if (isBarber && !needsProfile) {
+      setBarberOpen(true)
+      setAuthModalOpen(false)
+      // Se estava em /staff, volta para a raiz para limpar o URL
+      if (window.location.pathname.endsWith('/staff')) {
+        window.history.replaceState(null, '', '/Barbearia/')
+      }
+    }
+  }, [isBarber, needsProfile])
+
   // Abre AuthModal quando precisa completar perfil (após OAuth)
   useEffect(() => {
     if (needsProfile) setAuthModalOpen(true)
   }, [needsProfile])
 
-  // Após login, se havia um serviço pendente, abre o BookingModal
+  // Após login, se havia um serviço pendente, abre o BookingModal (só para clientes)
   useEffect(() => {
-    if (user && !needsProfile && pendingServiceRef.current) {
+    if (user && !needsProfile && pendingServiceRef.current && user.role === 'client') {
       setBookingOpen(true)
     }
   }, [user, needsProfile])
+
+  if (isStaffRoute && !user) return <StaffLoginPage />
 
   // Clique em "Reservar Corte" (sem serviço específico)
   const handleBookClick = () => {
@@ -64,7 +76,7 @@ function AppInner() {
 
   const handleAuthSuccess = () => {
     setAuthModalOpen(false)
-    if (!needsProfile) setBookingOpen(true)
+    if (!needsProfile && user?.role === 'client') setBookingOpen(true)
   }
 
   return (
@@ -77,11 +89,17 @@ function AppInner() {
         />
       )}
 
+      {/* Barber overlay */}
+      {barberOpen && (
+        <BarberApp onExit={() => setBarberOpen(false)} />
+      )}
+
       <Navbar
         onBookClick={handleBookClick}
         onLoginClick={() => setAuthModalOpen(true)}
         onDashboardClick={() => setDashboardOpen(true)}
         onAdminClick={isAdmin ? () => setAdminOpen(true) : undefined}
+        onBarberClick={isBarber ? () => setBarberOpen(true) : undefined}
       />
 
       <main>

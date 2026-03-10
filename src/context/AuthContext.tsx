@@ -4,12 +4,18 @@ import {
 import type { Session } from '@supabase/supabase-js'
 import { supabase, isSupabaseConfigured } from '../lib/supabase'
 
+// ─── Emails com acesso admin (fallback enquanto o DB não tiver role='admin') ──
+const ADMIN_EMAILS = [
+  'danilosilvalira10@gmail.com',
+]
+
 // ─── Tipos das linhas do DB ────────────────────────────────────────────────────
 interface DbProfile {
   id:         string
   name:       string
   phone:      string
   avatar_url: string
+  role:       string
   created_at: string
 }
 
@@ -44,6 +50,7 @@ export interface User {
   avatarUrl:   string | null
   memberSince: string
   bookings:    UserBooking[]
+  role:        'client' | 'barber' | 'admin'
 }
 
 interface AuthContextType {
@@ -51,6 +58,8 @@ interface AuthContextType {
   authLoading:      boolean
   needsProfile:     boolean
   signInWithGoogle: () => Promise<void>
+  signInWithEmail:  (email: string, password: string) => Promise<'ok' | 'error'>
+  signUpAsBarber:   (email: string, password: string) => Promise<'ok' | 'error' | 'not_authorised' | 'already_exists'>
   completeProfile:    (name: string, phone: string) => Promise<'ok' | 'error'>
   updateProfile:      (name: string, phone: string) => Promise<'ok' | 'error'>
   updateAvatar:       (file: File) => Promise<'ok' | 'error'>
@@ -98,7 +107,45 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         (session.user.user_metadata?.avatar_url as string | undefined) ??
         (session.user.user_metadata?.picture   as string | undefined) ?? ''
 
-      if (!profile || !profile.name) {
+      // ── Determinar role ──────────────────────────────────────────────────────
+      const emailLower   = session.user.email?.toLowerCase() ?? ''
+      const isAdminEmail = ADMIN_EMAILS.map(e => e.toLowerCase()).includes(emailLower)
+
+      let role: User['role'] = 'client'
+      if (isAdminEmail || profile?.role === 'admin') {
+        role = 'admin'
+      } else if (profile?.role === 'barber') {
+        role = 'barber'
+      }
+
+      // ── Barbeiro sem nome: auto-preencher a partir da tabela barbers ─────────
+      if (role === 'barber' && profile && !profile.name) {
+        const { data: barberRow } = await supabase
+          .from('barbers')
+          .select('name')
+          .ilike('email', emailLower)
+          .maybeSingle()
+        if (barberRow?.name) {
+          await supabase.from('profiles')
+            .update({ name: barberRow.name })
+            .eq('id', session.user.id)
+          setNeedsProfile(false)
+          setUser({
+            id:          session.user.id,
+            name:        barberRow.name,
+            phone:       profile.phone ?? '',
+            email:       session.user.email ?? null,
+            avatarUrl:   profile.avatar_url || oauthAvatar || null,
+            memberSince: profile.created_at.slice(0, 10),
+            bookings:    [],
+            role,
+          })
+          return
+        }
+      }
+
+      // ── Perfil incompleto (clientes novos via Google) ────────────────────────
+      if (!profile || (!profile.name && role === 'client')) {
         setNeedsProfile(true)
         setUser({
           id:          session.user.id,
@@ -108,15 +155,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           avatarUrl:   oauthAvatar || null,
           memberSince: session.user.created_at.slice(0, 10),
           bookings:    [],
+          role,
         })
         return
       }
 
-      const { data: rowsRaw } = await supabase
-        .from('bookings')
-        .select('*')
-        .eq('user_id', session.user.id)
-        .order('date', { ascending: false })
+      // ── Marcações: apenas para clientes ─────────────────────────────────────
+      const { data: rowsRaw } = role === 'client'
+        ? await supabase
+            .from('bookings')
+            .select('*')
+            .eq('user_id', session.user.id)
+            .order('date', { ascending: false })
+        : { data: [] }
 
       setNeedsProfile(false)
       setUser({
@@ -127,6 +178,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         avatarUrl:   profile.avatar_url || oauthAvatar || null,
         memberSince: profile.created_at.slice(0, 10),
         bookings:    ((rowsRaw ?? []) as DbBooking[]).map(mapBooking),
+        role,
       })
     } finally {
       setAuthLoading(false)
@@ -170,6 +222,39 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       provider: 'google',
       options:  { redirectTo: `${window.location.origin}${import.meta.env.BASE_URL}` },
     })
+  }
+
+  // ── Login com email + password (funcionários) ─────────────────────────────────
+  const signInWithEmail = async (email: string, password: string): Promise<'ok' | 'error'> => {
+    const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password })
+    return error ? 'error' : 'ok'
+  }
+
+  // ── Registo de barbeiro (valida email na tabela barbers antes de criar conta) ──
+  const signUpAsBarber = async (
+    email: string,
+    password: string,
+  ): Promise<'ok' | 'error' | 'not_authorised' | 'already_exists'> => {
+    const emailClean = email.trim().toLowerCase()
+
+    // Verifica se o email está pré-registado como barbeiro
+    const { data: barberRow } = await supabase
+      .from('barbers')
+      .select('id')
+      .ilike('email', emailClean)
+      .maybeSingle()
+
+    if (!barberRow) return 'not_authorised'
+
+    const { error } = await supabase.auth.signUp({ email: emailClean, password })
+    if (error) {
+      if (error.message.toLowerCase().includes('already registered') ||
+          error.message.toLowerCase().includes('already exists')) {
+        return 'already_exists'
+      }
+      return 'error'
+    }
+    return 'ok'
   }
 
   // ── Completar perfil após OAuth ───────────────────────────────────────────────
@@ -305,7 +390,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   return (
     <AuthContext.Provider value={{
       user, authLoading, needsProfile,
-      signInWithGoogle,
+      signInWithGoogle, signInWithEmail, signUpAsBarber,
       completeProfile, updateProfile, updateAvatar,
       logout, cancelBooking, addBooking,
     }}>

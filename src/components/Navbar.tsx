@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Menu, X, User, LogIn, LayoutDashboard } from 'lucide-react'
+import { Menu, X, User, LogIn, LayoutDashboard, Scissors } from 'lucide-react'
 import BarberPole from './BarberPole'
 import LanguageSwitcher from './LanguageSwitcher'
 import { useLanguage } from '../context/LanguageContext'
@@ -10,9 +10,10 @@ interface NavbarProps {
   onLoginClick:     () => void
   onDashboardClick: () => void
   onAdminClick?:    () => void
+  onBarberClick?:   () => void
 }
 
-export default function Navbar({ onBookClick, onLoginClick, onDashboardClick, onAdminClick }: NavbarProps) {
+export default function Navbar({ onBookClick, onLoginClick, onDashboardClick, onAdminClick, onBarberClick }: NavbarProps) {
   const [menuOpen, setMenuOpen]   = useState(false)
   const [scrolled, setScrolled]   = useState(false)
   const { t } = useLanguage()
@@ -97,13 +98,25 @@ export default function Navbar({ onBookClick, onLoginClick, onDashboardClick, on
                     <span className="hidden xl:inline">Admin</span>
                   </button>
                 )}
-                <button
-                  onClick={onDashboardClick}
-                  className="flex items-center gap-1.5 px-3 py-1.5 border border-gold/40 text-gold hover:bg-gold/10 transition-colors font-body text-xs whitespace-nowrap"
-                >
-                  <User size={13} />
-                  <span className="max-w-[100px] truncate">{user.name.split(' ')[0]}</span>
-                </button>
+                {onBarberClick && (
+                  <button
+                    onClick={onBarberClick}
+                    title="Painel Barbeiro"
+                    className="flex items-center gap-1.5 px-2.5 py-1.5 border border-gold/40 text-gold hover:bg-gold/10 transition-colors font-body text-xs whitespace-nowrap"
+                  >
+                    <Scissors size={13} />
+                    <span className="hidden xl:inline">Painel</span>
+                  </button>
+                )}
+                {!onBarberClick && (
+                  <button
+                    onClick={onDashboardClick}
+                    className="flex items-center gap-1.5 px-3 py-1.5 border border-gold/40 text-gold hover:bg-gold/10 transition-colors font-body text-xs whitespace-nowrap"
+                  >
+                    <User size={13} />
+                    <span className="max-w-[100px] truncate">{user.name.split(' ')[0]}</span>
+                  </button>
+                )}
               </div>
             ) : (
               <button
@@ -163,11 +176,11 @@ export default function Navbar({ onBookClick, onLoginClick, onDashboardClick, on
                 <div className="flex gap-2 py-4">
                   {user ? (
                     <button
-                      onClick={() => { closeMenu(); onDashboardClick() }}
+                      onClick={() => { closeMenu(); onBarberClick ? onBarberClick() : onDashboardClick() }}
                       className="flex-1 flex items-center justify-center gap-2 py-3.5 border-2 border-gold/40 text-gold font-body font-semibold text-sm tracking-wide"
                     >
-                      <User size={15} />
-                      {t('nav.myAccount')}
+                      {onBarberClick ? <Scissors size={15} /> : <User size={15} />}
+                      {onBarberClick ? 'Painel' : t('nav.myAccount')}
                     </button>
                   ) : (
                     <button
