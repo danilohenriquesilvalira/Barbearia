@@ -74,7 +74,7 @@ export default function SchedulingSection({
     : null
 
   return (
-    <section id="agendar" className="relative py-16 sm:py-20 px-4 sm:px-6 overflow-hidden">
+    <section id="agendar" className="relative py-16 sm:py-20 xl:py-32 px-4 sm:px-6 2xl:px-12 overflow-hidden">
       {/* Fundo dessaturado — evita conflito de cor com o dourado */}
       <div className="absolute inset-0" style={{
         backgroundImage: `url('${asset('/fundo_page_1.jpg')}')`,
@@ -85,14 +85,14 @@ export default function SchedulingSection({
       }} />
       {/* Overlay escuro */}
       <div className="absolute inset-0 bg-gradient-to-b from-off-black/82 via-off-black/68 to-off-black/85" />
-      <div className="relative z-10 max-w-4xl mx-auto">
+      <div className="relative z-10 max-w-5xl xl:max-w-6xl 2xl:max-w-7xl mx-auto">
 
         {/* ── Header ── */}
         <div className="text-center mb-10 sm:mb-14">
           <p className="font-mono text-[11px] tracking-[0.6em] uppercase text-gold/60 mb-5">
             {t('scheduling.sectionTag')}
           </p>
-          <h2 className="font-display text-4xl sm:text-6xl lg:text-7xl font-bold text-paper mb-8">
+          <h2 className="font-display text-4xl sm:text-6xl lg:text-7xl xl:text-8xl 2xl:text-9xl font-bold text-paper mb-8">
             {t('scheduling.title')}
           </h2>
           <div className="flex items-center justify-center gap-4 max-w-lg mx-auto">

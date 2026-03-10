@@ -66,7 +66,7 @@ function BarberCard({
         {/* Badge disponibilidade — canto superior */}
         <div className={`
           absolute top-2 right-2 flex items-center gap-1 px-2 py-1
-          font-mono text-[9px] tracking-widest uppercase backdrop-blur-sm
+          font-mono text-[9px] xl:text-[10px] 2xl:text-xs tracking-widest uppercase backdrop-blur-sm
           ${barber.available
             ? 'bg-off-black/80 text-gold border border-gold/40'
             : 'bg-off-black/80 text-paper-muted border border-paper/10'
@@ -99,26 +99,26 @@ function BarberCard({
       {/* Info do barbeiro */}
       <div className="space-y-1.5">
         <div className="flex items-center justify-between pb-1.5 border-b border-paper/5">
-          <h3 className="font-display text-sm sm:text-base text-paper font-semibold leading-tight">
+          <h3 className="font-display text-sm sm:text-base xl:text-lg 2xl:text-xl text-paper font-semibold leading-tight">
             {barber.name}
           </h3>
           <div className="flex items-center gap-1 flex-shrink-0 ml-1">
             <Star size={10} className="text-gold fill-gold" />
-            <span className="font-mono text-[11px] text-gold">{barber.rating}</span>
+            <span className="font-mono text-[11px] xl:text-xs 2xl:text-sm text-gold">{barber.rating}</span>
           </div>
         </div>
 
-        <p className="font-mono text-[10px] text-gold/80 tracking-widest uppercase">{barber.role}</p>
+        <p className="font-mono text-[10px] xl:text-xs 2xl:text-sm text-gold/80 tracking-widest uppercase">{barber.role}</p>
 
         <div className="flex flex-wrap gap-1">
           {barber.specialties.map((sp) => (
-            <span key={sp} className="px-1.5 py-0.5 border border-gold/20 text-paper-muted font-body text-[10px] leading-tight">
+            <span key={sp} className="px-1.5 py-0.5 border border-gold/20 text-paper-muted font-body text-[10px] xl:text-xs 2xl:text-sm leading-tight">
               {sp}
             </span>
           ))}
         </div>
 
-        <p className="font-mono text-[10px] text-paper-muted pt-0.5">
+        <p className="font-mono text-[10px] xl:text-xs 2xl:text-sm text-paper-muted pt-0.5">
           <Scissors size={9} className="inline mr-1 text-gold/50" />
           {barber.totalCuts.toLocaleString('pt-PT')} {t('barbers.cuts')}
         </p>
@@ -128,16 +128,11 @@ function BarberCard({
   )
 }
 
-interface BarbersSectionProps {
-  onBarberSelect:    (barber: Barber) => void
-  selectedBarberId?: string | null
-}
-
-export default function BarbersSection({ onBarberSelect, selectedBarberId }: BarbersSectionProps) {
+export default function BarbersSection() {
   const { t } = useLanguage()
 
   return (
-    <section id="barbeiros" className="relative py-16 sm:py-20 px-4 sm:px-6 overflow-hidden">
+    <section id="barbeiros" className="relative py-16 sm:py-20 xl:py-32 px-4 sm:px-6 2xl:px-12 overflow-hidden">
       {/* Fundo dessaturado — evita conflito de cor com o dourado */}
       <div className="absolute inset-0" style={{
         backgroundImage: `url('${asset('/fundo_page_1.jpg')}')`,
@@ -150,18 +145,18 @@ export default function BarbersSection({ onBarberSelect, selectedBarberId }: Bar
       <div className="absolute inset-0 bg-gradient-to-b from-off-black/82 via-off-black/68 to-off-black/85" />
       {/* Transição suave do topo — dissolve o preto da secção anterior */}
       <div className="absolute top-0 left-0 right-0 h-40 sm:h-56 bg-gradient-to-b from-[#050505] to-transparent pointer-events-none z-10" />
-      <div className="relative z-20 max-w-5xl mx-auto">
+      <div className="relative z-20 max-w-7xl 2xl:max-w-[1700px] mx-auto">
         {/* Header */}
         <div className="text-center mb-12 sm:mb-16">
-          <p className="font-mono text-[11px] tracking-[0.6em] uppercase text-gold/60 mb-5">
+          <p className="font-mono text-[11px] xl:text-xs 2xl:text-sm tracking-[0.6em] uppercase text-gold/60 mb-5">
             {t('barbers.sectionTag')}
           </p>
-          <h2 className="font-display text-5xl sm:text-6xl lg:text-7xl font-bold text-paper mb-8">
+          <h2 className="font-display text-5xl sm:text-6xl lg:text-7xl xl:text-8xl 2xl:text-9xl font-bold text-paper mb-8">
             {t('barbers.title')}
           </h2>
           <div className="flex items-center justify-center gap-4 max-w-xl mx-auto">
             <div className="h-px flex-1 bg-gradient-to-r from-transparent via-gold/50 to-gold" />
-            <span className="font-mono text-[10px] sm:text-xs font-semibold tracking-[0.2em] text-gold uppercase whitespace-nowrap px-2">
+            <span className="font-mono text-[10px] sm:text-xs xl:text-sm font-semibold tracking-[0.2em] text-gold uppercase whitespace-nowrap px-2">
               {t('barbers.subtitle')}
             </span>
             <div className="h-px flex-1 bg-gradient-to-l from-transparent via-gold/50 to-gold" />
@@ -169,13 +164,13 @@ export default function BarbersSection({ onBarberSelect, selectedBarberId }: Bar
         </div>
 
         {/* Grid — 2 cols mobile, 4 desktop */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 xl:gap-8 2xl:gap-10">
           {BARBERS.map((barber) => (
             <BarberCard
               key={barber.id}
               barber={barber}
-              onSelect={onBarberSelect}
-              isSelected={selectedBarberId === barber.id}
+              onSelect={() => {}}
+              isSelected={false}
             />
           ))}
         </div>

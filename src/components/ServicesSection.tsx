@@ -102,7 +102,7 @@ function ServiceCard({
         {/* Ícone de Duração Ouro */}
         <div className="flex items-center gap-1.5 mb-2.5">
           <IconClockSmall />
-          <span className="font-mono text-[10px] tracking-[0.2em] text-[#C5A059] uppercase">
+          <span className="font-mono text-[10px] xl:text-xs 2xl:text-sm tracking-[0.2em] text-[#C5A059] uppercase">
             {service.duration} min
           </span>
         </div>
@@ -124,7 +124,7 @@ function ServiceCard({
         </div>
 
         {/* Descrição */}
-        <p className="font-body text-[13px] sm:text-sm text-paper-muted/75 font-light leading-relaxed mb-6 sm:mb-8 pr-2">
+        <p className="font-body text-[13px] sm:text-sm xl:text-base 2xl:text-lg text-paper-muted/75 font-light leading-relaxed mb-6 sm:mb-8 pr-2">
           {desc}
         </p>
 
@@ -135,11 +135,11 @@ function ServiceCard({
           <div className="flex flex-col gap-1">
             <div className="flex items-center gap-1.5 text-[#C5A059]/50 mb-0.5">
               <IconTagSmall size={10} />
-              <span className="font-mono text-[8px] tracking-[0.25em] pb-px">VALOR</span>
+              <span className="font-mono text-[8px] xl:text-[10px] 2xl:text-xs tracking-[0.25em] pb-px">VALOR</span>
             </div>
             <div className="bg-[#141414] border-t border-l border-white/10 border-b border-r border-black px-3.5 py-1.5 shadow-[inset_1px_1px_4px_rgba(0,0,0,0.5)]">
               <span className={`
-                font-mono text-2xl sm:text-[28px] font-bold tracking-tight
+                font-mono text-2xl sm:text-[28px] xl:text-[32px] 2xl:text-4xl font-bold tracking-tight
                 ${isSelected ? 'text-[#C5A059]' : 'text-paper'}
                 transition-colors duration-300
               `}>
@@ -158,7 +158,7 @@ function ServiceCard({
             }
           `}>
             {isSelected && <Check size={14} strokeWidth={2.5} />}
-            <span className="font-hero text-sm sm:text-base tracking-[0.15em] uppercase mt-0.5">
+            <span className="font-hero text-sm sm:text-base xl:text-lg 2xl:text-xl tracking-[0.15em] uppercase mt-0.5">
               {isSelected ? t('services.selected') : t('services.select')}
             </span>
             {!isSelected && (
@@ -180,46 +180,44 @@ function ServiceCard({
    Services Section (Container)
    ═══════════════════════════════════════════════════════════════════════════ */
 interface ServicesSectionProps {
-  onServiceSelect: (service: Service) => void
-  selectedServiceId?: string | null
+  onBookService: (service: Service) => void
 }
 
-export default function ServicesSection({ onServiceSelect, selectedServiceId }: ServicesSectionProps) {
+export default function ServicesSection({ onBookService }: ServicesSectionProps) {
   const { t } = useLanguage()
 
   return (
-    <section id="servicos" className="relative py-20 sm:py-28 px-4 sm:px-6 bg-[#050505]">
-      <div className="max-w-6xl mx-auto">
+    <section id="servicos" className="relative py-20 sm:py-28 xl:py-36 px-4 sm:px-6 2xl:px-12 bg-[#050505]">
+      <div className="max-w-7xl 2xl:max-w-[1700px] mx-auto">
 
         {/* ── Header ── */}
         <div className="text-center mb-16 sm:mb-20">
-          <p className="font-mono text-[11px] tracking-[0.6em] uppercase text-[#C5A059]/60 mb-5">
+          <p className="font-mono text-[11px] xl:text-xs 2xl:text-sm tracking-[0.6em] uppercase text-[#C5A059]/60 mb-5">
             {t('services.sectionTag')}
           </p>
-          <h2 className="font-display text-5xl sm:text-6xl lg:text-7xl font-bold text-paper mb-5">
+          <h2 className="font-display text-5xl sm:text-6xl lg:text-7xl xl:text-8xl 2xl:text-9xl font-bold text-paper mb-5">
             {t('services.title')}
           </h2>
           <div className="flex items-center justify-center gap-4 max-w-md mx-auto mt-8">
             <div className="h-px flex-1 bg-gradient-to-r from-transparent via-gold/50 to-gold" />
-            <span className="font-mono text-[10px] sm:text-xs font-semibold tracking-[0.2em] text-gold uppercase whitespace-nowrap">
-              Todos os preços incluem IVA
+            <span className="font-mono text-[10px] sm:text-xs xl:text-sm font-semibold tracking-[0.2em] text-gold uppercase whitespace-nowrap">
+              {t('services.vatNote')}
             </span>
             <div className="h-px flex-1 bg-gradient-to-l from-transparent via-gold/50 to-gold" />
           </div>
         </div>
 
-        {/* ── Grid — Imponente, 1 coluna no mobile, 2 no Desktop grande ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
+        {/* ── Grid ── */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-6 sm:gap-8 2xl:gap-10">
           {SERVICES.map((service) => (
             <ServiceCard
               key={service.id}
               service={service}
-              onSelect={onServiceSelect}
-              isSelected={selectedServiceId === service.id}
+              onSelect={onBookService}
+              isSelected={false}
             />
           ))}
         </div>
-
 
       </div>
     </section>

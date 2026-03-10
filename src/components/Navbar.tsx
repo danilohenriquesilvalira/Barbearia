@@ -23,12 +23,18 @@ export default function Navbar({ onBookClick, onLoginClick, onDashboardClick }: 
     return () => window.removeEventListener('scroll', handler)
   }, [])
 
-  // Fecha o menu ao redimensionar para desktop
+  // Colapsa hamburger ao chegar no breakpoint lg (1024px)
   useEffect(() => {
-    const handler = () => { if (window.innerWidth >= 768) setMenuOpen(false) }
+    const handler = () => { if (window.innerWidth >= 1024) setMenuOpen(false) }
     window.addEventListener('resize', handler)
     return () => window.removeEventListener('resize', handler)
   }, [])
+
+  // Bloqueia scroll do body com menu aberto
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? 'hidden' : ''
+    return () => { document.body.style.overflow = '' }
+  }, [menuOpen])
 
   const NAV_LINKS = [
     { label: t('nav.services'), href: '#servicos' },
@@ -44,32 +50,36 @@ export default function Navbar({ onBookClick, onLoginClick, onDashboardClick }: 
       <BarberPole orientation="horizontal" height="4px" />
 
       <nav className={`transition-all duration-300 ${scrolled ? 'bg-off-black/98 shadow-2xl' : 'bg-off-black/95'} backdrop-blur-md border-b border-paper/5`}>
-        <div className="max-w-6xl mx-auto px-5 sm:px-8 flex items-center h-16 md:h-[68px]">
 
-          {/* ── Logo — esquerda ── */}
-          <a href="#" className="flex items-center gap-2.5 flex-shrink-0">
-            <span className="font-graffiti text-2xl sm:text-3xl text-gold leading-none">Connect</span>
-            <span className="h-4 w-px bg-gold/30" />
-            <span className="font-mono text-[9px] tracking-[0.25em] uppercase text-paper-muted leading-none">
+        {/* ── Barra principal ── */}
+        <div className="max-w-7xl 2xl:max-w-[1700px] mx-auto px-4 min-[400px]:px-5 lg:px-8 2xl:px-12 flex items-center h-14 min-[400px]:h-16 lg:h-[68px]">
+
+          {/* ── Logo ── */}
+          <a href="#" className="flex items-center gap-2 min-[400px]:gap-2.5 flex-shrink-0">
+            <span className="font-graffiti text-xl min-[400px]:text-2xl lg:text-3xl text-gold leading-none whitespace-nowrap">
+              Connect
+            </span>
+            <span className="hidden min-[400px]:block h-4 w-px bg-gold/30 flex-shrink-0" />
+            <span className="hidden min-[400px]:block font-mono text-[9px] tracking-[0.25em] uppercase text-paper-muted leading-none flex-shrink-0">
               Barber
             </span>
           </a>
 
-          {/* ── Links desktop — centro real ── */}
-          <div className="hidden md:flex flex-1 items-center justify-center gap-8 lg:gap-10">
+          {/* ── Links desktop — visíveis apenas em lg+ ── */}
+          <div className="hidden lg:flex flex-1 items-center justify-center gap-7 xl:gap-10">
             {NAV_LINKS.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
-                className="font-display text-[15px] text-paper-muted hover:text-gold transition-colors tracking-wide"
+                className="font-display text-[14px] xl:text-[15px] text-paper-muted hover:text-gold transition-colors tracking-wide whitespace-nowrap"
               >
                 {link.label}
               </a>
             ))}
           </div>
 
-          {/* ── Direita desktop: Lang + Auth + CTA ── */}
-          <div className="hidden md:flex items-center gap-3 flex-shrink-0">
+          {/* ── Direita desktop: Lang + Auth + CTA (lg+) ── */}
+          <div className="hidden lg:flex items-center gap-2 xl:gap-3 flex-shrink-0 ml-auto">
             <LanguageSwitcher />
 
             <div className="w-px h-4 bg-paper/10" />
@@ -77,15 +87,15 @@ export default function Navbar({ onBookClick, onLoginClick, onDashboardClick }: 
             {user ? (
               <button
                 onClick={onDashboardClick}
-                className="flex items-center gap-1.5 px-3 py-1.5 border border-gold/40 text-gold hover:bg-gold/10 transition-colors font-body text-xs"
+                className="flex items-center gap-1.5 px-3 py-1.5 border border-gold/40 text-gold hover:bg-gold/10 transition-colors font-body text-xs whitespace-nowrap"
               >
                 <User size={13} />
-                <span className="max-w-[90px] truncate">{user.name.split(' ')[0]}</span>
+                <span className="max-w-[100px] truncate">{user.name.split(' ')[0]}</span>
               </button>
             ) : (
               <button
                 onClick={onLoginClick}
-                className="flex items-center gap-1.5 px-3 py-1.5 border border-paper/10 text-paper-muted hover:border-gold/40 hover:text-gold transition-colors font-body text-xs"
+                className="flex items-center gap-1.5 px-3 py-1.5 border border-paper/10 text-paper-muted hover:border-gold/40 hover:text-gold transition-colors font-body text-xs whitespace-nowrap"
               >
                 <LogIn size={13} />
                 {t('nav.login')}
@@ -94,18 +104,18 @@ export default function Navbar({ onBookClick, onLoginClick, onDashboardClick }: 
 
             <button
               onClick={onBookClick}
-              className="px-5 py-2 border-2 border-gold text-gold font-body font-semibold text-xs tracking-[0.15em] uppercase hover:bg-gold hover:text-off-black transition-all duration-300"
+              className="px-5 py-2 border-2 border-gold text-gold font-body font-semibold text-xs tracking-[0.15em] uppercase hover:bg-gold hover:text-off-black transition-all duration-300 whitespace-nowrap"
             >
               {t('nav.book')}
             </button>
           </div>
 
-          {/* ── Mobile direita: Lang + Hamburger ── */}
-          <div className="flex md:hidden items-center gap-2 ml-auto">
+          {/* ── Mobile/tablet direita: Lang + Hamburger (abaixo de lg) ── */}
+          <div className="flex lg:hidden items-center gap-2 ml-auto flex-shrink-0">
             <LanguageSwitcher />
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="p-2 border border-paper/10 text-paper-muted hover:border-gold/50 hover:text-gold transition-colors"
+              className="p-2 border border-paper/10 text-paper-muted hover:border-gold/50 hover:text-gold transition-colors flex-shrink-0"
               aria-label="Menu"
             >
               {menuOpen ? <X size={18} /> : <Menu size={18} />}
@@ -113,23 +123,24 @@ export default function Navbar({ onBookClick, onLoginClick, onDashboardClick }: 
           </div>
         </div>
 
-        {/* Menu mobile — drawer */}
+        {/* ── Drawer mobile/tablet ── */}
         {menuOpen && (
           <>
-            {/* Backdrop toque para fechar */}
+            {/* Backdrop */}
             <div
-              className="fixed inset-0 top-[72px] bg-off-black/50 z-[-1]"
+              className="fixed inset-0 top-[calc(56px+4px)] min-[400px]:top-[calc(64px+4px)] bg-off-black/60 z-[-1]"
               onClick={closeMenu}
             />
-            <div className="md:hidden border-t border-paper/5 bg-off-black animate-slide-up">
-              <div className="px-4 py-2 flex flex-col">
+            <div className="lg:hidden border-t border-paper/5 bg-off-black animate-slide-up max-h-[calc(100svh-68px)] overflow-y-auto">
+              <div className="px-4 py-1 flex flex-col max-w-lg mx-auto">
+
                 {/* Nav links */}
                 {NAV_LINKS.map((link) => (
                   <a
                     key={link.href}
                     href={link.href}
                     onClick={closeMenu}
-                    className="py-3.5 px-2 font-display text-xl text-paper-muted hover:text-gold transition-colors border-b border-paper/5 last:border-0"
+                    className="py-4 px-2 font-display text-lg min-[400px]:text-xl text-paper-muted hover:text-gold transition-colors border-b border-paper/5 last:border-0 active:text-gold"
                   >
                     {link.label}
                   </a>
@@ -161,6 +172,7 @@ export default function Navbar({ onBookClick, onLoginClick, onDashboardClick }: 
                     {t('nav.book')}
                   </button>
                 </div>
+
               </div>
             </div>
           </>

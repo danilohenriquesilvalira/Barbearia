@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { X, Calendar, Clock, Scissors, User, LogOut, CheckCircle, XCircle } from 'lucide-react'
+import { useState, useRef } from 'react'
+import { X, Calendar, Clock, Scissors, User, LogOut, CheckCircle, XCircle, Loader2, Camera, Pencil, Check, Phone, Mail } from 'lucide-react'
 import { useAuth, type UserBooking } from '../context/AuthContext'
 import { useLanguage } from '../context/LanguageContext'
 import BarberPole from './BarberPole'
@@ -96,9 +96,45 @@ function BookingCard({
 }
 
 export default function UserDashboard({ onClose }: UserDashboardProps) {
-  const { user, logout, cancelBooking } = useAuth()
+  const { user, logout, cancelBooking, updateProfile, updateAvatar } = useAuth()
   const { t, tr } = useLanguage()
-  const [tab, setTab] = useState<Tab>('upcoming')
+  const [tab, setTab]               = useState<Tab>('upcoming')
+  const [loggingOut, setLoggingOut] = useState(false)
+
+  // ── Profile edit state ──────────────────────────────────────────────────────
+  const [editingName, setEditingName]   = useState(false)
+  const [editingPhone, setEditingPhone] = useState(false)
+  const [nameVal, setNameVal]           = useState('')
+  const [phoneVal, setPhoneVal]         = useState('')
+  const [savingField, setSavingField]   = useState<'name' | 'phone' | null>(null)
+  const [avatarLoading, setAvatarLoading] = useState(false)
+  const [avatarError, setAvatarError]     = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setAvatarLoading(true)
+    await updateAvatar(file)
+    setAvatarLoading(false)
+    // reset input para permitir re-upload do mesmo ficheiro
+    e.target.value = ''
+  }
+
+  const handleSaveName = async () => {
+    if (!nameVal.trim()) return
+    setSavingField('name')
+    await updateProfile(nameVal.trim(), user?.phone ?? '')
+    setSavingField(null)
+    setEditingName(false)
+  }
+
+  const handleSavePhone = async () => {
+    setSavingField('phone')
+    await updateProfile(user?.name ?? '', phoneVal.trim())
+    setSavingField(null)
+    setEditingPhone(false)
+  }
 
   if (!user) return null
 
@@ -115,7 +151,11 @@ export default function UserDashboard({ onClose }: UserDashboardProps) {
     return d < today || b.status === 'cancelled' || b.status === 'completed'
   }).sort((a, b) => b.date.localeCompare(a.date))
 
-  const handleLogout = () => { logout(); onClose() }
+  const handleLogout = async () => {
+    setLoggingOut(true)
+    await logout()
+    onClose()
+  }
 
   const tabs: { key: Tab; label: string }[] = [
     { key: 'upcoming', label: tr.dashboard.tabs.upcoming },
@@ -228,15 +268,46 @@ export default function UserDashboard({ onClose }: UserDashboardProps) {
           {/* Tab: Perfil */}
           {tab === 'profile' && (
             <div className="space-y-3">
-              {/* Avatar */}
+              {/* Avatar + nome + membro */}
               <div className="border border-gold/20 bg-[#0A0A0A] overflow-hidden">
                 <div className="h-px bg-gradient-to-r from-transparent via-gold/40 to-transparent" />
-                <div className="flex items-center gap-4 p-4">
-                  <div className="w-14 h-14 border-2 border-gold/40 flex items-center justify-center flex-shrink-0 bg-off-black-3">
-                    <User size={24} className="text-gold/60" />
+                <div className="flex flex-col items-center gap-3 p-5">
+                  {/* Avatar com botão de upload */}
+                  <div className="relative group">
+                    <div className="w-20 h-20 border-2 border-gold/40 flex items-center justify-center flex-shrink-0 bg-off-black-3 overflow-hidden">
+                      {avatarLoading ? (
+                        <Loader2 size={24} className="text-gold animate-spin" />
+                      ) : user.avatarUrl ? (
+                        <img
+                          src={user.avatarUrl}
+                          alt={user.name}
+                          className="w-full h-full object-cover"
+                          onError={() => setAvatarError(true)}
+                        />
+                      ) : (
+                        <User size={32} className="text-gold/60" />
+                      )}
+                    </div>
+                    {/* Overlay câmara */}
+                    <button
+                      onClick={() => fileInputRef.current?.click()}
+                      disabled={avatarLoading}
+                      className="absolute inset-0 flex items-center justify-center bg-off-black/70 opacity-0 group-hover:opacity-100 transition-opacity disabled:cursor-not-allowed"
+                      title="Alterar foto"
+                    >
+                      <Camera size={18} className="text-gold" />
+                    </button>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleAvatarUpload}
+                    />
                   </div>
-                  <div>
-                    <p className="font-display text-paper font-semibold">{user.name}</p>
+
+                  <div className="text-center">
+                    <p className="font-display text-paper font-semibold text-lg">{user.name}</p>
                     <p className="font-mono text-[10px] text-gold/60 tracking-widest uppercase mt-0.5">
                       {t('dashboard.profile.member')} {memberDate}
                     </p>
@@ -244,19 +315,114 @@ export default function UserDashboard({ onClose }: UserDashboardProps) {
                 </div>
               </div>
 
-              {/* Campos */}
-              {[
-                { label: t('dashboard.profile.email'), value: user.email },
-                { label: t('dashboard.profile.phone'), value: user.phone || '—' },
-              ].map(({ label, value }) => (
-                <div key={label} className="border border-gold/20 bg-[#0A0A0A] overflow-hidden">
+              {/* Nome — editável */}
+              <div className="border border-gold/20 bg-[#0A0A0A] overflow-hidden">
+                <div className="h-px bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
+                <div className="px-4 py-3">
+                  <p className="font-mono text-[10px] tracking-[0.3em] uppercase text-gold/70 mb-1.5">
+                    {t('dashboard.profile.name') || 'Nome'}
+                  </p>
+                  {editingName ? (
+                    <div className="flex items-center gap-2">
+                      <input
+                        autoFocus
+                        value={nameVal}
+                        onChange={e => setNameVal(e.target.value)}
+                        onKeyDown={e => { if (e.key === 'Enter') handleSaveName(); if (e.key === 'Escape') setEditingName(false) }}
+                        className="flex-1 bg-transparent border-b border-gold/40 text-paper font-body text-sm pb-0.5 outline-none focus:border-gold"
+                      />
+                      <button
+                        onClick={handleSaveName}
+                        disabled={savingField === 'name'}
+                        className="text-gold hover:text-gold/70 transition-colors disabled:opacity-50"
+                      >
+                        {savingField === 'name'
+                          ? <Loader2 size={14} className="animate-spin" />
+                          : <Check size={14} />}
+                      </button>
+                      <button
+                        onClick={() => setEditingName(false)}
+                        className="text-paper-muted hover:text-paper transition-colors"
+                      >
+                        <X size={14} />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-between">
+                      <p className="font-body text-sm text-paper">{user.name || '—'}</p>
+                      <button
+                        onClick={() => { setNameVal(user.name); setEditingName(true) }}
+                        className="text-paper-muted hover:text-gold transition-colors"
+                      >
+                        <Pencil size={13} />
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Telemóvel — editável */}
+              <div className="border border-gold/20 bg-[#0A0A0A] overflow-hidden">
+                <div className="h-px bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
+                <div className="px-4 py-3">
+                  <p className="font-mono text-[10px] tracking-[0.3em] uppercase text-gold/70 mb-1.5 flex items-center gap-1.5">
+                    <Phone size={9} />
+                    {t('dashboard.profile.phone')}
+                  </p>
+                  {editingPhone ? (
+                    <div className="flex items-center gap-2">
+                      <input
+                        autoFocus
+                        type="tel"
+                        value={phoneVal}
+                        onChange={e => setPhoneVal(e.target.value)}
+                        onKeyDown={e => { if (e.key === 'Enter') handleSavePhone(); if (e.key === 'Escape') setEditingPhone(false) }}
+                        className="flex-1 bg-transparent border-b border-gold/40 text-paper font-body text-sm pb-0.5 outline-none focus:border-gold"
+                        placeholder="+351 9XX XXX XXX"
+                      />
+                      <button
+                        onClick={handleSavePhone}
+                        disabled={savingField === 'phone'}
+                        className="text-gold hover:text-gold/70 transition-colors disabled:opacity-50"
+                      >
+                        {savingField === 'phone'
+                          ? <Loader2 size={14} className="animate-spin" />
+                          : <Check size={14} />}
+                      </button>
+                      <button
+                        onClick={() => setEditingPhone(false)}
+                        className="text-paper-muted hover:text-paper transition-colors"
+                      >
+                        <X size={14} />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-between">
+                      <p className="font-body text-sm text-paper">{user.phone || '—'}</p>
+                      <button
+                        onClick={() => { setPhoneVal(user.phone ?? ''); setEditingPhone(true) }}
+                        className="text-paper-muted hover:text-gold transition-colors"
+                      >
+                        <Pencil size={13} />
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Email — só leitura */}
+              {user.email && (
+                <div className="border border-gold/20 bg-[#0A0A0A] overflow-hidden">
                   <div className="h-px bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
                   <div className="px-4 py-3">
-                    <p className="font-mono text-[10px] tracking-[0.3em] uppercase text-gold/70 mb-1">{label}</p>
-                    <p className="font-body text-sm text-paper">{value}</p>
+                    <p className="font-mono text-[10px] tracking-[0.3em] uppercase text-gold/70 mb-1.5 flex items-center gap-1.5">
+                      <Mail size={9} />
+                      Email
+                    </p>
+                    <p className="font-body text-sm text-paper-muted">{user.email}</p>
                   </div>
                 </div>
-              ))}
+              )}
 
               {/* Separador */}
               <div className="flex items-center gap-3 py-1">
@@ -271,7 +437,7 @@ export default function UserDashboard({ onClose }: UserDashboardProps) {
                   <div className="h-px bg-gradient-to-r from-transparent via-gold/40 to-transparent" />
                   <div className="p-4 text-center">
                     <p className="font-heading text-3xl text-gold">{user.bookings.filter(b => b.status === 'completed').length}</p>
-                    <p className="font-mono text-[10px] text-paper-muted tracking-widest uppercase mt-1">Cortes</p>
+                    <p className="font-mono text-[10px] text-paper-muted tracking-widest uppercase mt-1">{t('dashboard.stats.cuts')}</p>
                   </div>
                 </div>
                 <div className="border border-gold/20 bg-[#0A0A0A] overflow-hidden">
@@ -280,7 +446,7 @@ export default function UserDashboard({ onClose }: UserDashboardProps) {
                     <p className="font-heading text-3xl text-gold">
                       {user.bookings.filter(b => b.status === 'completed').reduce((s, b) => s + b.price, 0)}€
                     </p>
-                    <p className="font-mono text-[10px] text-paper-muted tracking-widest uppercase mt-1">Total</p>
+                    <p className="font-mono text-[10px] text-paper-muted tracking-widest uppercase mt-1">{t('dashboard.stats.total')}</p>
                   </div>
                 </div>
               </div>
@@ -292,10 +458,13 @@ export default function UserDashboard({ onClose }: UserDashboardProps) {
         <div className="px-5 py-4 border-t border-paper/5">
           <button
             onClick={handleLogout}
-            className="w-full flex items-center justify-center gap-2 py-3 border border-paper/10 text-paper-muted hover:border-gold/50 hover:text-gold font-body text-sm tracking-widest uppercase transition-all"
+            disabled={loggingOut}
+            className="w-full flex items-center justify-center gap-2 py-3 border border-paper/10 text-paper-muted hover:border-barber-red/50 hover:text-barber-red font-body text-sm tracking-widest uppercase transition-all disabled:opacity-50"
           >
-            <LogOut size={14} />
-            {t('dashboard.logout')}
+            {loggingOut
+              ? <><Loader2 size={14} className="animate-spin" /> {t('dashboard.loggingOut')}</>
+              : <><LogOut size={14} /> {t('dashboard.logout')}</>
+            }
           </button>
         </div>
       </div>

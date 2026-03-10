@@ -39,7 +39,7 @@ function IconWhatsApp({ size = 16 }: { size?: number }) {
 function FooterHeading({ label }: { label: string }) {
   return (
     <div className="mb-6">
-      <p className="font-mono text-[10px] tracking-[0.4em] uppercase text-gold mb-3">{label}</p>
+      <p className="font-mono text-[10px] xl:text-xs 2xl:text-sm tracking-[0.4em] uppercase text-gold mb-3">{label}</p>
       <div className="flex items-center gap-2">
         <div className="h-px w-6 bg-gold/60" />
         <span className="w-1 h-1 bg-gold/50 rotate-45 flex-shrink-0" />
@@ -81,13 +81,13 @@ export default function Footer() {
 
           {/* ── Marca ── */}
           <div className="sm:col-span-2 lg:col-span-1">
-            <p className="font-mono text-[9px] tracking-[0.5em] uppercase text-gold/40 mb-4">
+            <p className="font-mono text-[9px] xl:text-[10px] 2xl:text-xs tracking-[0.5em] uppercase text-gold/40 mb-4">
               Barbearia Clássica — Lisboa
             </p>
             <div className="flex items-center gap-2.5 mb-2">
-              <span className="font-graffiti text-4xl text-gold leading-none">Connect</span>
-              <span className="h-5 w-px bg-gold/30" />
-              <span className="font-mono text-[10px] tracking-[0.25em] uppercase text-paper-muted leading-none">Barber</span>
+              <span className="font-graffiti text-4xl xl:text-5xl 2xl:text-6xl text-gold leading-none">Connect</span>
+              <span className="h-5 xl:h-7 2xl:h-8 w-px bg-gold/30" />
+              <span className="font-mono text-[10px] xl:text-xs 2xl:text-sm tracking-[0.25em] uppercase text-paper-muted leading-none">Barber</span>
             </div>
             {/* Separador */}
             <div className="flex items-center gap-2 mb-6">
@@ -103,7 +103,7 @@ export default function Footer() {
                   key={label}
                   href={href}
                   aria-label={label}
-                  className="w-10 h-10 flex items-center justify-center text-paper/30 hover:text-gold transition-colors duration-200"
+                  className="w-10 h-10 xl:w-12 xl:h-12 flex items-center justify-center text-paper/30 hover:text-gold transition-colors duration-200"
                 >
                   <Icon size={16} />
                 </a>
@@ -118,8 +118,8 @@ export default function Footer() {
               {hours.map(({ day, h, open }, i) => (
                 <div key={day}>
                   <div className="flex justify-between items-center py-2.5 gap-4">
-                    <span className="font-body text-xs text-paper-muted">{day}</span>
-                    <span className={`font-mono text-[10px] whitespace-nowrap ${open ? 'text-gold/80' : 'text-paper/20'}`}>
+                    <span className="font-body text-xs xl:text-sm 2xl:text-base text-paper-muted">{day}</span>
+                    <span className={`font-mono text-[10px] xl:text-xs 2xl:text-sm whitespace-nowrap ${open ? 'text-gold/80' : 'text-paper/20'}`}>
                       {h}
                     </span>
                   </div>
@@ -141,14 +141,14 @@ export default function Footer() {
                 className="flex items-center gap-3 text-paper-muted hover:text-gold transition-colors"
               >
                 <Phone size={13} className="text-gold/60 flex-shrink-0" />
-                <span className="font-body text-sm">+351 21 123 45 67</span>
+                <span className="font-body text-sm xl:text-base 2xl:text-lg">+351 21 123 45 67</span>
               </a>
 
               <div className="flex items-start gap-3 text-paper-muted">
                 <MapPin size={13} className="text-gold/60 flex-shrink-0 mt-0.5" />
-                <span className="font-body text-sm leading-relaxed">
+                <span className="font-body text-sm xl:text-base 2xl:text-lg leading-relaxed">
                   Rua Augusta, 142<br />
-                  <span className="text-paper/40 text-xs">1100-053 Lisboa</span>
+                  <span className="text-paper/40 text-xs xl:text-sm 2xl:text-base">1100-053 Lisboa</span>
                 </span>
               </div>
 
@@ -159,7 +159,7 @@ export default function Footer() {
 
         {/* ── Bottom bar ── */}
         <div className="border-t border-paper/5 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="font-mono text-[9px] text-paper/20 tracking-widest">
+          <p className="font-mono text-[9px] xl:text-[10px] 2xl:text-xs text-paper/20 tracking-widest">
             {t('footer.copyright')}
           </p>
           <div className="flex items-center gap-2">
@@ -167,7 +167,7 @@ export default function Footer() {
             <span className="w-1 h-1 bg-gold/30 rotate-45" />
             <div className="h-px w-6 bg-gold/20" />
           </div>
-          <p className="font-mono text-[9px] text-paper/15 tracking-widest uppercase">
+          <p className="font-mono text-[9px] xl:text-[10px] 2xl:text-xs text-paper/15 tracking-widest uppercase">
             Lisboa · Portugal
           </p>
         </div>
