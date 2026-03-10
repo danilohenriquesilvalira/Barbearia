@@ -57,7 +57,7 @@ export default {
         },
         stripe: {
           '0%':   { backgroundPosition: '0 0' },
-          '100%': { backgroundPosition: '0 60px' },
+          '100%': { backgroundPosition: '0 40px' },  /* deve ser múltiplo exato do ciclo (40px) */
         },
       },
     },

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Menu, X, User, LogIn } from 'lucide-react'
+import { Menu, X, User, LogIn, LayoutDashboard } from 'lucide-react'
 import BarberPole from './BarberPole'
 import LanguageSwitcher from './LanguageSwitcher'
 import { useLanguage } from '../context/LanguageContext'
@@ -9,9 +9,10 @@ interface NavbarProps {
   onBookClick:      () => void
   onLoginClick:     () => void
   onDashboardClick: () => void
+  onAdminClick?:    () => void
 }
 
-export default function Navbar({ onBookClick, onLoginClick, onDashboardClick }: NavbarProps) {
+export default function Navbar({ onBookClick, onLoginClick, onDashboardClick, onAdminClick }: NavbarProps) {
   const [menuOpen, setMenuOpen]   = useState(false)
   const [scrolled, setScrolled]   = useState(false)
   const { t } = useLanguage()
@@ -56,11 +57,11 @@ export default function Navbar({ onBookClick, onLoginClick, onDashboardClick }: 
 
           {/* ── Logo ── */}
           <a href="#" className="flex items-center gap-2 min-[400px]:gap-2.5 flex-shrink-0">
-            <span className="font-graffiti text-xl min-[400px]:text-2xl lg:text-3xl text-gold leading-none whitespace-nowrap">
+            <span className="font-graffiti text-lg min-[400px]:text-lg lg:text-xl text-gold leading-none whitespace-nowrap">
               Connect
             </span>
             <span className="hidden min-[400px]:block h-4 w-px bg-gold/30 flex-shrink-0" />
-            <span className="hidden min-[400px]:block font-mono text-[9px] tracking-[0.25em] uppercase text-paper-muted leading-none flex-shrink-0">
+            <span className="hidden min-[400px]:block font-mono text-[8px] tracking-[0.25em] uppercase text-paper-muted leading-none flex-shrink-0">
               Barber
             </span>
           </a>
@@ -85,13 +86,25 @@ export default function Navbar({ onBookClick, onLoginClick, onDashboardClick }: 
             <div className="w-px h-4 bg-paper/10" />
 
             {user ? (
-              <button
-                onClick={onDashboardClick}
-                className="flex items-center gap-1.5 px-3 py-1.5 border border-gold/40 text-gold hover:bg-gold/10 transition-colors font-body text-xs whitespace-nowrap"
-              >
-                <User size={13} />
-                <span className="max-w-[100px] truncate">{user.name.split(' ')[0]}</span>
-              </button>
+              <div className="flex items-center gap-2">
+                {onAdminClick && (
+                  <button
+                    onClick={onAdminClick}
+                    title="Painel Admin"
+                    className="flex items-center gap-1.5 px-2.5 py-1.5 border border-barber-red/40 text-barber-red hover:bg-barber-red/10 transition-colors font-body text-xs whitespace-nowrap"
+                  >
+                    <LayoutDashboard size={13} />
+                    <span className="hidden xl:inline">Admin</span>
+                  </button>
+                )}
+                <button
+                  onClick={onDashboardClick}
+                  className="flex items-center gap-1.5 px-3 py-1.5 border border-gold/40 text-gold hover:bg-gold/10 transition-colors font-body text-xs whitespace-nowrap"
+                >
+                  <User size={13} />
+                  <span className="max-w-[100px] truncate">{user.name.split(' ')[0]}</span>
+                </button>
+              </div>
             ) : (
               <button
                 onClick={onLoginClick}

@@ -15,9 +15,19 @@ import BookingModal  from './components/BookingModal'
 import Footer        from './components/Footer'
 import AuthModal     from './components/AuthModal'
 import UserDashboard from './components/UserDashboard'
+import AdminApp      from './admin/AdminApp'
+
+// Emails Google com acesso admin
+// Quando o Supabase estiver activo, isto é substituído pela coluna `role` na tabela profiles
+const ADMIN_EMAILS: string[] = [
+  'danilosilvalira10@gmail.com',
+]
 
 function AppInner() {
   const { user, needsProfile } = useAuth()
+  const [adminOpen, setAdminOpen] = useState(false)
+
+  const isAdmin = !!user && ADMIN_EMAILS.includes(user.email ?? '')
 
   const [bookingOpen,   setBookingOpen]   = useState(false)
   const [authModalOpen, setAuthModalOpen] = useState(false)
@@ -59,10 +69,19 @@ function AppInner() {
 
   return (
     <div className="min-h-screen bg-off-black text-paper font-body">
+      {/* Admin overlay */}
+      {adminOpen && (
+        <AdminApp
+          onExit={() => setAdminOpen(false)}
+          adminName={user?.name ?? 'Admin'}
+        />
+      )}
+
       <Navbar
         onBookClick={handleBookClick}
         onLoginClick={() => setAuthModalOpen(true)}
         onDashboardClick={() => setDashboardOpen(true)}
+        onAdminClick={isAdmin ? () => setAdminOpen(true) : undefined}
       />
 
       <main>

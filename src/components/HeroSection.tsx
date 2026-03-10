@@ -42,7 +42,7 @@ export default function HeroSection({ onBookClick }: HeroSectionProps) {
         <span
           className="absolute left-0 font-hero leading-none select-none whitespace-nowrap"
           style={{
-            fontSize: 'clamp(120px, 12vw, 220px)',
+            fontSize: 'clamp(80px, 10vw, 180px)',
             WebkitTextStroke: '1px rgba(245,245,247,0.04)',
             color: 'transparent',
             transform: 'translateX(-18%) rotate(-90deg)',
@@ -54,7 +54,7 @@ export default function HeroSection({ onBookClick }: HeroSectionProps) {
         <span
           className="absolute right-0 font-hero leading-none select-none whitespace-nowrap"
           style={{
-            fontSize: 'clamp(120px, 12vw, 220px)',
+            fontSize: 'clamp(80px, 10vw, 180px)',
             WebkitTextStroke: '1px rgba(201,168,76,0.05)',
             color: 'transparent',
             transform: 'translateX(18%) rotate(90deg)',
@@ -72,10 +72,10 @@ export default function HeroSection({ onBookClick }: HeroSectionProps) {
         {/* ── Título centrado no espaço disponível ── */}
         <div className="flex-1 flex items-center justify-center w-full">
         <h1 className="font-graffiti leading-[0.9] tracking-normal flex flex-col items-center drop-shadow-2xl">
-          <span className="block text-paper text-[70px] sm:text-[110px] md:text-[140px] lg:text-[170px] xl:text-[210px] 2xl:text-[260px] 3xl:text-[320px] -mb-2 sm:-mb-6 rotate-[-2deg]">
+          <span className="block text-paper text-[45px] sm:text-[52px] md:text-[70px] lg:text-[87px] xl:text-[105px] 2xl:text-[130px] 3xl:text-[155px] -mb-2 sm:-mb-6 rotate-[-2deg]">
             CONNECT
           </span>
-          <span className="block text-[65px] sm:text-[100px] md:text-[120px] lg:text-[150px] xl:text-[190px] 2xl:text-[240px] 3xl:text-[295px] text-gold rotate-[1deg] ml-4">
+          <span className="block text-[42px] sm:text-[48px] md:text-[62px] lg:text-[75px] xl:text-[95px] 2xl:text-[120px] 3xl:text-[145px] text-gold rotate-[1deg] ml-4">
             BARBER
           </span>
         </h1>
