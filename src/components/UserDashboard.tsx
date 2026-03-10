@@ -108,7 +108,6 @@ export default function UserDashboard({ onClose }: UserDashboardProps) {
   const [phoneVal, setPhoneVal]         = useState('')
   const [savingField, setSavingField]   = useState<'name' | 'phone' | null>(null)
   const [avatarLoading, setAvatarLoading] = useState(false)
-  const [avatarError, setAvatarError]     = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -282,7 +281,7 @@ export default function UserDashboard({ onClose }: UserDashboardProps) {
                           src={user.avatarUrl}
                           alt={user.name}
                           className="w-full h-full object-cover"
-                          onError={() => setAvatarError(true)}
+                          onError={e => { (e.target as HTMLImageElement).style.display = 'none' }}
                         />
                       ) : (
                         <User size={32} className="text-gold/60" />

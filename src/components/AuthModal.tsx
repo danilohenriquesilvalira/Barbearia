@@ -25,7 +25,7 @@ export default function AuthModal({ onClose, onSuccess }: AuthModalProps) {
   const { signInWithGoogle, completeProfile, needsProfile, user } = useAuth()
   const { t } = useLanguage()
 
-  const [step, setStep]       = useState<'choose' | 'complete_profile'>(needsProfile ? 'complete_profile' : 'choose')
+  const [step]                = useState<'choose' | 'complete_profile'>(needsProfile ? 'complete_profile' : 'choose')
   const [name, setName]       = useState(user?.name ?? '')
   const [phone, setPhone]     = useState(user?.phone ?? '')
   const [loading, setLoading] = useState(false)

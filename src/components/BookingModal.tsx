@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react'
 import { X, Check, Loader2, ChevronLeft, ChevronRight, Scissors, User, Calendar, Clock } from 'lucide-react'
 import type { Service, Barber } from '../types'
-import { SERVICES, BARBERS, generateTimeSlots, generateMonthAvailability } from '../data/mockData'
+import { SERVICES, BARBERS, generateTimeSlots } from '../data/mockData'
 import { useLanguage } from '../context/LanguageContext'
 import { useAuth } from '../context/AuthContext'
 import BarberPole from './BarberPole'
@@ -30,8 +30,6 @@ export default function BookingModal({ onClose, initialService }: BookingModalPr
   const today = useMemo(() => { const d = new Date(); d.setHours(0,0,0,0); return d }, [])
   const [calYear,  setCalYear]  = useState(today.getFullYear())
   const [calMonth, setCalMonth] = useState(today.getMonth())
-
-  const monthAvailability = useMemo(() => generateMonthAvailability(), [])
 
   const daysInMonth  = new Date(calYear, calMonth + 1, 0).getDate()
   const firstDayOfWeek = new Date(calYear, calMonth, 1).getDay()
@@ -98,7 +96,8 @@ export default function BookingModal({ onClose, initialService }: BookingModalPr
   const steps: WizardStep[] = ['service', 'barber', 'datetime', 'confirm']
   const stepIdx = steps.indexOf(step)
 
-  const dateStr = date?.toLocaleDateString('pt-PT', { weekday: 'short', day: 'numeric', month: 'short' })
+  const dateStr   = date?.toLocaleDateString('pt-PT', { weekday: 'short', day: 'numeric', month: 'short' })
+  const isLoading = status === 'loading'
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -131,7 +130,7 @@ export default function BookingModal({ onClose, initialService }: BookingModalPr
             </div>
             <button
               onClick={onClose}
-              disabled={status === 'loading'}
+              disabled={isLoading}
               className="p-2 border border-paper/10 hover:border-gold/40 hover:text-gold text-paper-muted transition-colors disabled:opacity-30"
             >
               <X size={15} />
@@ -399,10 +398,10 @@ export default function BookingModal({ onClose, initialService }: BookingModalPr
               {step === 'confirm' && (
                 <button
                   onClick={handleConfirm}
-                  disabled={status === 'loading'}
+                  disabled={isLoading}
                   className="w-full py-3.5 bg-gold text-off-black font-mono text-xs tracking-[0.2em] uppercase font-bold hover:bg-gold-light transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
                 >
-                  {status === 'loading'
+                  {isLoading
                     ? <><Loader2 size={14} className="animate-spin" /> {t('booking.confirming')}</>
                     : <><Check size={14} strokeWidth={2.5} /> {t('booking.confirm')}</>
                   }
